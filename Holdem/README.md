@@ -1,3 +1,7 @@
+# Foreword
+
+This project is not all my own code. This was a joint effort between myself and CDT Nicholas Liebers.
+
 # Game Rules
 
 Holdem is a simulation of tournament style Texas Hold 'em. Holdem will continue until there is only one player
