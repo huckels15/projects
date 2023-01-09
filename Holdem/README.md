@@ -16,7 +16,7 @@ suits are hearts, diamonds, spades, and clubs. The initial configuration will co
 
 Here is an example of how the initial configuration of the board looks:
 
-![Example of the Board](/resources/defaultBoardSetup.png)
+![Example of the Board](/Holdem/resources/defaultBoardSetup.png)
 
 ## Game Flow
 
@@ -69,7 +69,7 @@ The players will continue to play hands until they are either out of money or ar
 
 This is an example of what the game ending looks like in the GUI:
 
-![Alt text](/resources/endGameBoard.png)
+![Alt text](/Holdem/resources/endGameBoard.png)
 
 # Open Design, Fail-Safe Defaults, and Economy of Mechanism Examples:
 
