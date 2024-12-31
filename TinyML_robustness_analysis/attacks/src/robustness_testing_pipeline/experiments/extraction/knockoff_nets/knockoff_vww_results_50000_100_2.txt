@@ -1,0 +1,30 @@
+Basic Arch Results:
+Int8 -> Accuracy on test examples: 84.28975458443573%
+
+Int8 -> Test Accuracy: 67.30225344402882%
+Fidelity: 73.1776297783049%
+
+Lenet Arch Results:
+Int8 -> Accuracy on test examples: 84.13465924641912%
+
+Int8 -> Test Accuracy: 69.89325791442387%
+Fidelity: 74.22680412371135%
+
+Alexnet Arch Results:
+Int8 -> Accuracy on test examples: 84.44484992245233%
+
+Int8 -> Test Accuracy: 73.41483441291852%
+Fidelity: 70.28555788705411%
+
+Resnet Arch Results:
+Int8 -> Accuracy on test examples: 84.11641273606423%
+
+Int8 -> Test Accuracy: 72.812699571207%
+Fidelity: 78.53298056746647%
+
+Mobilenet Arch Results:
+Int8 -> Accuracy on test examples: 84.13465924641912%
+
+Int8 -> Test Accuracy: 68.81671380348509%
+Fidelity: 73.6976553234194%
+

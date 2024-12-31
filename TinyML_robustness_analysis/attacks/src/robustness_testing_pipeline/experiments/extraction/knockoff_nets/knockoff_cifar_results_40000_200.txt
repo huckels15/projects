@@ -1,0 +1,30 @@
+Basic Arch Results:
+Int8 -> Accuracy on test examples: 81.76%
+
+Int8 -> Accuracy: 63.51%
+Fidelity: 64.81%
+
+VGG Arch Results:
+Int8 -> Accuracy on test examples: 81.76%
+
+Int8 -> Accuracy: 10.0%
+Fidelity: 16.53%
+
+Lenet Arch Results:
+Int8 -> Accuracy on test examples: 81.76%
+
+Int8 -> Accuracy: 63.849999999999994%
+Fidelity: 64.42999999999999%
+
+Alexnet Arch Results:
+Int8 -> Accuracy on test examples: 81.76%
+
+Int8 -> Accuracy: 60.260000000000005%
+Fidelity: 61.31999999999999%
+
+Resnet Arch Results:
+Int8 -> Accuracy on test examples: 81.76%
+
+Int8 -> Accuracy: 66.13%
+Fidelity: 67.86%
+

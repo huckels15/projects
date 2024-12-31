@@ -1,0 +1,28 @@
+Basic Arch Results:
+Int8 -> Accuracy on test examples: 84.34%
+
+Int8 -> Train Accuracy: 87.506%
+Int8 -> Test Accuracy: 65.28%
+Fidelity: 65.68%
+
+Lenet Arch Results:
+Int8 -> Accuracy on test examples: 84.34%
+
+Int8 -> Train Accuracy: 87.72%
+Int8 -> Test Accuracy: 65.67%
+Fidelity: 65.72%
+
+Alexnet Arch Results:
+Int8 -> Accuracy on test examples: 84.34%
+
+Int8 -> Train Accuracy: 85.474%
+Int8 -> Test Accuracy: 67.45%
+Fidelity: 67.66%
+
+Resnet Arch Results:
+Int8 -> Accuracy on test examples: 84.34%
+
+Int8 -> Train Accuracy: 86.212%
+Int8 -> Test Accuracy: 70.77%
+Fidelity: 72.83%
+
