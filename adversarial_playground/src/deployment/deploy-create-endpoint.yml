@@ -1,0 +1,107 @@
+---
+- name: "Deploy models to endpoints"
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Read ResNet model ID
+      shell: "cat .resnet-attacks-ansible-id"
+      register: resnet_model_id
+    
+    - name: Wait before next deployment
+      pause:
+        seconds: 20
+
+    - name: Deploy ResNet model to endpoint
+      shell: |
+        gcloud ai endpoints deploy-model 4716311146880040960 \
+          --project='secret-cipher-399620' \
+          --model="{{ resnet_model_id.stdout }}" \
+          --display-name="resnet-attacks-ansible" \
+          --region=us-east1 \
+          --accelerator=type=nvidia-tesla-t4,count=1 \
+          --service-account="data-service-account@secret-cipher-399620.iam.gserviceaccount.com" \
+          --machine-type="n1-highmem-8"
+      async: 999999
+      poll: 0
+
+    - name: Wait before next deployment
+      pause:
+        seconds: 20
+
+    - name: Read AlexNet model ID
+      shell: "cat .alexnet-attacks-ansible-id"
+      register: alexnet_model_id
+
+    - name: Deploy AlexNet model to endpoint
+      shell: |
+        gcloud ai endpoints deploy-model 520047009705492480 \
+          --project='secret-cipher-399620' \
+          --model="{{ alexnet_model_id.stdout }}" \
+          --display-name="alexnet-attacks-ansible" \
+          --region=us-east4 \
+          --accelerator=type=nvidia-tesla-t4,count=1 \
+          --service-account="data-service-account@secret-cipher-399620.iam.gserviceaccount.com" \
+          --machine-type="n1-highmem-8"
+      async: 999999
+      poll: 0
+
+    - name: Wait before next deployment
+      pause:
+        seconds: 20
+
+    - name: Read Custom model ID
+      shell: "cat .custom-attacks-ansible-id"
+      register: custom_model_id
+
+    - name: Deploy Custom model to endpoint
+      shell: |
+        gcloud ai endpoints deploy-model 7193736244143063040 \
+          --project='secret-cipher-399620' \
+          --model="{{ custom_model_id.stdout }}" \
+          --display-name="custom-attacks-ansible" \
+          --region=us-central1 \
+          --accelerator=type=nvidia-tesla-t4,count=1 \
+          --service-account="data-service-account@secret-cipher-399620.iam.gserviceaccount.com" \
+          --machine-type="n1-highmem-8"
+      async: 999999
+      poll: 0
+
+    - name: Wait before next deployment
+      pause:
+        seconds: 20
+
+    - name: Read Robust ResNet model ID
+      shell: "cat .robust-resnet-attacks-ansible-id"
+      register: robust_resnet_model_id
+
+    - name: Deploy Robust ResNet model to endpoint
+      shell: |
+        gcloud ai endpoints deploy-model 588410244674093056 \
+          --project='secret-cipher-399620' \
+          --model="{{ robust_resnet_model_id.stdout }}" \
+          --display-name="robust-resnet-attacks-ansible" \
+          --region=us-west1 \
+          --accelerator=type=nvidia-tesla-t4,count=1 \
+          --service-account="data-service-account@secret-cipher-399620.iam.gserviceaccount.com" \
+          --machine-type="n1-highmem-8"
+      async: 999999
+      poll: 0
+
+    - name: Wait before next deployment
+      pause:
+        seconds: 20
+
+    - name: Read Robust AlexNet model ID
+      shell: "cat .robust-alexnet-attacks-ansible-id"
+      register: robust_alexnet_model_id
+
+    - name: Deploy Robust AlexNet model to endpoint
+      shell: |
+        gcloud ai endpoints deploy-model 957652637560340480 \
+          --project='secret-cipher-399620' \
+          --model="{{ robust_alexnet_model_id.stdout }}" \
+          --display-name="robust-alexnet-attacks-ansible" \
+          --region=us-west4 \
+          --accelerator=type=nvidia-tesla-t4,count=1 \
+          --service-account="data-service-account@secret-cipher-399620.iam.gserviceaccount.com" \
+          --machine-type="n1-highmem-8"

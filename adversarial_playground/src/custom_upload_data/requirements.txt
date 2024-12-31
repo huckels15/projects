@@ -1,0 +1,8 @@
+fastapi[all]
+pytest==7.1.2 
+pytest-pep8==1.0.6
+pytest-mock==3.8.2 
+pytest-cov==3.0.0 
+uvicorn
+google-cloud-storage==2.10.0
+numpy==1.22.4 

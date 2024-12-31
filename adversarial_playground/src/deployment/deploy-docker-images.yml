@@ -1,0 +1,85 @@
+---
+- name: "Build docker images and push them to GCR"
+  hosts: localhost
+  gather_facts: false
+  tasks:
+  - name: "Get timestamp for docker tag"
+    shell: "(date +%Y%m%d%H%M%S)"
+    register: tag
+  - name: Print tag
+    debug:
+      var: tag
+  - name: Build frontend container image
+    community.general.docker_image:
+      build:
+        path: ../app-building/frontend
+      name: gcr.io/{{ gcp_project }}/app-frontend-ansible:{{ tag.stdout}}
+      source: build
+  - name: Push frontend image to GCR
+    community.general.docker_image:
+      name: gcr.io/{{ gcp_project }}/app-frontend-ansible:{{ tag.stdout}}
+      repository: gcr.io/{{ gcp_project }}/app-frontend-ansible:{{ tag.stdout}}
+      push: yes
+      source: local
+  - name: Build alexnet_attacks container image
+    community.general.docker_image:
+      build:
+        path: ../art_attacks/alexnet_attacks
+      name: gcr.io/{{ gcp_project }}/alexnet-attacks-ansible:{{ tag.stdout}}
+      source: build
+  - name: Push alexnet_attacks image to GCR
+    community.general.docker_image:
+      name: gcr.io/{{ gcp_project }}/alexnet-attacks-ansible:{{ tag.stdout}}
+      repository: gcr.io/{{ gcp_project }}/alexnet-attacks-ansible:{{ tag.stdout}}
+      push: yes
+      source: local
+  - name: Build custom_attacks container image
+    community.general.docker_image:
+      build:
+        path: ../art_attacks/custom_attacks
+      name: gcr.io/{{ gcp_project }}/custom-attacks-ansible:{{ tag.stdout}}
+      source: build
+  - name: Push custom_attacks image to GCR
+    community.general.docker_image:
+      name: gcr.io/{{ gcp_project }}/custom-attacks-ansible:{{ tag.stdout}}
+      repository: gcr.io/{{ gcp_project }}/custom-attacks-ansible:{{ tag.stdout}}
+      push: yes
+      source: local
+  - name: Build resnet_attacks container image
+    community.general.docker_image:
+      build:
+        path: ../art_attacks/resnet_attacks
+      name: gcr.io/{{ gcp_project }}/resnet-attacks-ansible:{{ tag.stdout}}
+      source: build
+  - name: Push resnet_attacks image to GCR
+    community.general.docker_image:
+      name: gcr.io/{{ gcp_project }}/resnet-attacks-ansible:{{ tag.stdout}}
+      repository: gcr.io/{{ gcp_project }}/resnet-attacks-ansible:{{ tag.stdout}}
+      push: yes
+      source: local
+  - name: Build robust_alexnet_attacks container image
+    community.general.docker_image:
+      build:
+        path: ../art_attacks/robust_alexnet_attacks
+      name: gcr.io/{{ gcp_project }}/robust-alexnet-attacks-ansible:{{ tag.stdout}}
+      source: build
+  - name: Push robust_alexnet_attacks image to GCR
+    community.general.docker_image:
+      name: gcr.io/{{ gcp_project }}/robust-alexnet-attacks-ansible:{{ tag.stdout}}
+      repository: gcr.io/{{ gcp_project }}/robust-alexnet-attacks-ansible:{{ tag.stdout}}
+      push: yes
+      source: local
+  - name: Build robust_resnet_attacks container image
+    community.general.docker_image:
+      build:
+        path: ../art_attacks/robust_resnet_attacks
+      name: gcr.io/{{ gcp_project }}/robust-resnet-attacks-ansible:{{ tag.stdout}}
+      source: build
+  - name: Push robust_alexnet_attacks image to GCR
+    community.general.docker_image:
+      name: gcr.io/{{ gcp_project }}/robust-resnet-attacks-ansible:{{ tag.stdout}}
+      repository: gcr.io/{{ gcp_project }}/robust-resnet-attacks-ansible:{{ tag.stdout}}
+      push: yes
+      source: local
+  - name: "Save docker tag"
+    shell: echo {{ tag.stdout}} > .docker-tag

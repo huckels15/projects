@@ -1,0 +1,45 @@
+---
+- name: "Deploy models to endpoints"
+  hosts: localhost
+  gather_facts: false
+  tasks:
+
+    - name: Copy docker tag file
+      copy:
+        src: .docker-tag
+        dest: .docker-tag
+        mode: 0644
+
+    - name: "Get docker tag"
+      shell: "cat .docker-tag"
+      register: tag
+
+    - name: Print tag
+      debug:
+        var: tag
+
+    - name: Deploy Upload Data
+      shell: |
+        gcloud compute instances create-with-container ansible-data \
+          --project='secret-cipher-399620' \
+          --zone='us-east1-c' \
+          --machine-type='e2-medium' \
+          --service-account=data-upload@secret-cipher-399620.iam.gserviceaccount.com \
+          --tags=http-server,https-server \
+          --container-image="{{ lookup('env', 'DOCKERHUB_USERNAME') }}/custom-upload-data-ansible:{{ tag.stdout }}" \
+          --container-privileged \ 
+          --scopes='https://www.googleapis.com/auth/cloud-platform'
+
+
+    - name: Deploy Upload Model
+      shell: |
+        gcloud compute instances create-with-container ansible-model \
+          --project='secret-cipher-399620' \
+          --zone='us-east1-c' \
+          --machine-type='e2-medium' \
+          --service-account=data-upload@secret-cipher-399620.iam.gserviceaccount.com \
+          --tags=http-server,https-server \
+          --container-image="{{ lookup('env', 'DOCKERHUB_USERNAME') }}/custom-upload-model-ansible:{{ tag.stdout }}" \
+          --container-privileged \ 
+          --scopes='https://www.googleapis.com/auth/cloud-platform'
+

@@ -1,0 +1,45 @@
+---
+- name: "Build docker images and push them to GCR"
+  hosts: localhost
+  gather_facts: false
+  tasks:
+  - name: "Get timestamp for docker tag"
+    shell: "(date +%Y%m%d%H%M%S)"
+    register: tag
+  - name: Print tag
+    debug:
+      var: tag
+
+  - name: Log in to Docker Hub
+    community.general.docker_login:
+      username:  "{{ lookup('env', 'DOCKERHUB_USERNAME') }}"
+      password: "{{ lookup('env', 'DOCKERHUB_PASSWORD') }}"
+
+  - name: Build custom-upload-data container image
+    community.general.docker_image:
+      build:
+        path: ../custom_upload_data
+      name: "{{ lookup('env', 'DOCKERHUB_USERNAME') }}/custom-upload-data-ansible:{{ tag.stdout}}"
+      source: build
+  - name: Push custom-upload-data image to GCR
+    community.general.docker_image:
+      name: "{{ lookup('env', 'DOCKERHUB_USERNAME') }}/custom-upload-data-ansible:{{ tag.stdout}}"
+      repository: "{{ lookup('env', 'DOCKERHUB_USERNAME') }}/custom-upload-data-ansible:{{ tag.stdout}}"
+      push: yes
+      source: local
+
+  - name: Build custom-upload-model container image
+    community.general.docker_image:
+      build:
+        path: ../custom_upload_model
+      name: "{{ lookup('env', 'DOCKERHUB_USERNAME') }}/custom-upload-model-ansible:{{ tag.stdout}}"
+      source: build
+  - name: Push custom-upload-model image to GCR
+    community.general.docker_image:
+      name: "{{ lookup('env', 'DOCKERHUB_USERNAME') }}/custom-upload-model-ansible:{{ tag.stdout}}"
+      repository: "{{ lookup('env', 'DOCKERHUB_USERNAME') }}/custom-upload-model-ansible:{{ tag.stdout}}"
+      push: yes
+      source: local
+
+  - name: "Save docker tag"
+    shell: echo {{ tag.stdout}} > .docker-tag 

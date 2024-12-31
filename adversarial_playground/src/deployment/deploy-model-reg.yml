@@ -1,0 +1,179 @@
+---
+- name: "Push Custom Containers to model registry"
+  hosts: localhost
+  gather_facts: false
+  tasks:
+
+  - name: Copy docker tag file
+    copy:
+      src: .docker-tag
+      dest: .docker-tag
+      mode: 0644
+
+  - name: "Get docker tag"
+    shell: "cat .docker-tag"
+    register: tag
+
+  - name: Print tag
+    debug:
+      var: tag
+
+  - name: Remove existing ResNet model
+    shell: |
+      gcloud ai models list \
+        --region=us-east1 \
+        --filter="displayName=resnet-attacks-ansible" \
+        --format="value(name)" | \
+      xargs -I {} gcloud ai models delete {} --region=us-east1 --quiet
+    ignore_errors: true
+
+  - name: Register ResNet
+    shell: |
+      gcloud ai models upload \
+        --display-name="resnet-attacks-ansible" \
+        --region=us-east1 \
+        --container-image-uri="gcr.io/secret-cipher-399620/resnet-attacks-ansible:{{ tag.stdout }}" \
+        --container-health-route="/" \
+        --container-predict-route="/predict" \
+        --container-ports=8000
+
+  - name: Get ResNet model ID
+    shell: |
+      gcloud ai models list \
+        --region=us-east1 \
+        --filter="displayName=resnet-attacks-ansible" \
+        --format="value(name)"
+    register: resnet_model_id
+
+  - name: Save ResNet model ID
+    copy:
+      content: "{{ resnet_model_id.stdout }}"
+      dest: ".resnet-attacks-ansible-id"
+
+  - name: Remove existing AlexNet model
+    shell: |
+      gcloud ai models list \
+        --region=us-east4 \
+        --filter="displayName=alexnet-attacks-ansible" \
+        --format="value(name)" | \
+      xargs -I {} gcloud ai models delete {} --region=us-east4 --quiet
+    ignore_errors: true
+
+  - name: Register AlexNet
+    shell: |
+      gcloud ai models upload \
+        --display-name="alexnet-attacks-ansible" \
+        --region=us-east4 \
+        --container-image-uri="gcr.io/secret-cipher-399620/alexnet-attacks-ansible:{{ tag.stdout }}" \
+        --container-health-route="/" \
+        --container-predict-route="/predict" \
+        --container-ports=8000
+
+  - name: Get AlexNet model ID
+    shell: |
+      gcloud ai models list \
+        --region=us-east4 \
+        --filter="displayName=alexnet-attacks-ansible" \
+        --format="value(name)"
+    register: alexnet_model_id
+
+  - name: Save AlexNet model ID
+    copy:
+      content: "{{ alexnet_model_id.stdout }}"
+      dest: ".alexnet-attacks-ansible-id"
+
+  - name: Remove existing Custom model
+    shell: |
+      gcloud ai models list \
+        --region=us-central1 \
+        --filter="displayName=custom-attacks-ansible" \
+        --format="value(name)" | \
+      xargs -I {} gcloud ai models delete {} --region=us-central1 --quiet
+    ignore_errors: true
+
+  - name: Register Custom
+    shell: |
+      gcloud ai models upload \
+        --display-name="custom-attacks-ansible" \
+        --region=us-central1 \
+        --container-image-uri="gcr.io/secret-cipher-399620/custom-attacks-ansible:{{ tag.stdout }}" \
+        --container-health-route="/" \
+        --container-predict-route="/predict" \
+        --container-ports=8000
+
+  - name: Get Custom model ID
+    shell: |
+      gcloud ai models list \
+        --region=us-central1 \
+        --filter="displayName=custom-attacks-ansible" \
+        --format="value(name)"
+    register: custom_model_id
+
+  - name: Save Custom model ID
+    copy:
+      content: "{{ custom_model_id.stdout }}"
+      dest: ".custom-attacks-ansible-id"
+
+  - name: Remove existing Robust ResNet model
+    shell: |
+      gcloud ai models list \
+        --region=us-west1 \
+        --filter="displayName=robust-resnet-attacks-ansible" \
+        --format="value(name)" | \
+      xargs -I {} gcloud ai models delete {} --region=us-west1 --quiet
+    ignore_errors: true
+
+  - name: Register Robust ResNet
+    shell: |
+      gcloud ai models upload \
+        --display-name="robust-resnet-attacks-ansible" \
+        --region=us-west1 \
+        --container-image-uri="gcr.io/secret-cipher-399620/robust-resnet-attacks-ansible:{{ tag.stdout }}" \
+        --container-health-route="/" \
+        --container-predict-route="/predict" \
+        --container-ports=8000
+
+  - name: Get Robust ResNet model ID
+    shell: |
+      gcloud ai models list \
+        --region=us-west1 \
+        --filter="displayName=robust-resnet-attacks-ansible" \
+        --format="value(name)"
+    register: robust_resnet_model_id
+
+  - name: Save Robust ResNet model ID
+    copy:
+      content: "{{ robust_resnet_model_id.stdout }}"
+      dest: ".robust-resnet-attacks-ansible-id"
+
+  - name: Remove existing Robust AlexNet model
+    shell: |
+      gcloud ai models list \
+        --region=us-west4 \
+        --filter="displayName=robust-alexnet-attacks-ansible" \
+        --format="value(name)" | \
+      xargs -I {} gcloud ai models delete {} --region=us-west4 --quiet
+    ignore_errors: true
+
+  - name: Register Robust AlexNet
+    shell: |
+      gcloud ai models upload \
+        --display-name="robust-alexnet-attacks-ansible" \
+        --region=us-west4 \
+        --container-image-uri="gcr.io/secret-cipher-399620/robust-alexnet-attacks-ansible:{{ tag.stdout }}" \
+        --container-health-route="/" \
+        --container-predict-route="/predict" \
+        --container-ports=8000
+
+  - name: Get Robust AlexNet model ID
+    shell: |
+      gcloud ai models list \
+        --region=us-west4 \
+        --filter="displayName=robust-alexnet-attacks-ansible" \
+        --format="value(name)"
+    register: robust_alexnet_model_id
+
+  - name: Save Robust AlexNet model ID
+    copy:
+      content: "{{ robust_alexnet_model_id.stdout }}"
+      dest: ".robust-alexnet-attacks-ansible-id"

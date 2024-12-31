@@ -1,0 +1,58 @@
+# Use Python as the base image
+FROM python:3.10-slim
+
+# Set environment variables to minimize interaction during installation
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install dependencies for gcloud, Node.js, and bash
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    gnupg \
+    apt-transport-https \
+    ca-certificates \
+    lsb-release \
+    bash \
+    build-essential \
+    python3 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Add the Google Cloud SDK public key and repository
+RUN curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | gpg --dearmor -o /usr/share/keyrings/cloud.google.gpg && \
+    echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" > /etc/apt/sources.list.d/google-cloud-sdk.list
+
+# Install Google Cloud SDK
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    google-cloud-sdk \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Node.js (Node 20)
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
+    apt-get install -y nodejs && \
+    rm -rf /var/lib/apt/lists/*
+
+# Set the working directory for the app
+WORKDIR /app
+
+# Copy backend dependencies and install
+COPY ./backend/package*.json /app/backend/
+WORKDIR /app/backend
+RUN npm install
+
+# Copy frontend dependencies and install
+COPY ./frontend/package*.json /app/frontend/
+WORKDIR /app/frontend
+RUN npm install
+
+# Copy the rest of the application code
+COPY . /app
+
+# Expose ports for both the backend and the frontend
+EXPOSE 3000 3001
+
+# Install a process manager to run both backend and frontend simultaneously
+RUN npm install -g concurrently
+
+RUN npm install -g nodemon
+
+# Command to run backend and frontend in development mode
+CMD ["bash"]

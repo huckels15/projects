@@ -1,0 +1,206 @@
+/* hacker.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    html {
+        scroll-behavior: smooth;
+        height: 100%;
+    }
+
+    body {
+        @apply antialiased bg-black;
+        font-family: 'Source Code Pro', monospace;
+        color: #00ff00;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        font-family: 'Source Code Pro', monospace;
+    }
+}
+
+@layer components {
+
+    /* Layout Components */
+    .layout-container {
+        @apply container mx-auto px-4;
+    }
+
+    .page-wrapper {
+        @apply flex flex-col min-h-screen bg-black;
+    }
+
+    /* Header Styles */
+    .header-wrapper {
+        @apply fixed w-full top-0 z-50;
+    }
+
+    .header-container {
+        @apply bg-black shadow-lg border-b border-green-500;
+    }
+
+    .header-content {
+        @apply container mx-auto px-4 h-16 flex items-center justify-between;
+    }
+
+    .header-logo {
+        @apply text-green-500 hover:text-green-300 transition-colors flex items-center gap-2;
+    }
+
+    .nav-desktop {
+        @apply hidden md:flex items-center gap-6;
+    }
+
+    .nav-link {
+        @apply flex items-center gap-2 text-green-400 hover:text-green-200 transition-colors;
+    }
+
+    .nav-link-active {
+        @apply font-semibold text-green-300;
+    }
+
+    .nav-icon-wrapper {
+        @apply flex items-center justify-center w-5 h-5 text-green-500;
+    }
+
+    .nav-text {
+        @apply leading-none pt-0.5 text-green-400;
+    }
+
+    /* Mobile Menu */
+    .mobile-menu-button {
+        @apply md:hidden text-green-500 p-2 hover:bg-green-900 rounded-lg transition-colors;
+    }
+
+    .mobile-menu {
+        @apply absolute top-16 left-0 right-0 bg-black border-t border-green-500 shadow-lg transform transition-transform duration-300 ease-in-out;
+    }
+
+    .mobile-menu-overlay {
+        @apply fixed inset-0 bg-green-900/50 md:hidden z-40;
+    }
+
+    /* Hero Section */
+    .hero-section {
+        @apply pt-24 md:pt-32 pb-12 px-4 bg-black;
+    }
+
+    .hero-content {
+        @apply container mx-auto max-w-4xl text-center;
+    }
+
+    .hero-title {
+        @apply text-4xl md:text-6xl font-bold gradient-text mb-6 font-montserrat;
+    }
+
+    .hero-description {
+        @apply text-lg md:text-xl text-green-400 max-w-2xl mx-auto mb-8;
+    }
+
+    /* Buttons */
+    .button-primary {
+        @apply px-8 py-3 bg-green-700 text-black rounded-full font-semibold shadow-lg hover:shadow-xl transition-shadow;
+    }
+
+    .button-secondary {
+        @apply px-8 py-3 bg-black text-green-500 rounded-full font-semibold shadow-lg hover:shadow-xl transition-shadow;
+    }
+
+    /* Cards */
+    .feature-card {
+        @apply bg-green-900 text-green-300 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow cursor-pointer;
+    }
+
+    .feature-card-title {
+        @apply text-xl font-semibold mb-4 font-montserrat text-green-400;
+    }
+
+    .feature-card-description {
+        @apply text-green-500;
+    }
+
+    /* Content Sections */
+    .content-section {
+        @apply container mx-auto px-4 py-12 bg-black;
+    }
+
+    .content-grid {
+        @apply grid grid-cols-1 md:grid-cols-3 gap-8;
+    }
+
+    /* Footer */
+    .footer {
+        @apply w-full bg-black py-6 mt-auto border-t border-green-500;
+    }
+
+    .footer-text {
+        @apply text-center text-green-400 text-sm;
+    }
+}
+
+@layer components {
+
+    /* Chat Layout */
+    .chat-container {
+        @apply flex flex-col h-screen overflow-hidden bg-black text-green-300;
+    }
+
+    .chat-main {
+        @apply flex-1 flex overflow-hidden;
+    }
+
+    /* Chat Sidebar */
+    .chat-sidebar {
+        @apply w-80 bg-black border-r border-green-700 flex flex-col;
+    }
+
+    .chat-sidebar-header {
+        @apply flex items-center justify-between p-4 border-b border-green-700;
+    }
+
+    /* Chat Messages Area */
+    .chat-messages {
+        @apply flex-1 flex flex-col overflow-hidden bg-black;
+    }
+
+    .chat-messages-header {
+        @apply bg-green-900 border-b border-green-500 p-4 flex items-center gap-3;
+    }
+
+    .chat-messages-container {
+        @apply flex-1 overflow-y-auto p-4 space-y-6;
+    }
+
+    .chat-message {
+        @apply flex items-start gap-3 max-w-3xl mx-4;
+    }
+
+    .chat-message-user {
+        @apply ml-auto bg-green-700 text-black rounded-2xl p-4;
+    }
+
+    .chat-message-assistant {
+        @apply mr-auto bg-green-900 shadow-md rounded-2xl p-4;
+    }
+
+    /* Chat Input Area */
+    .chat-input-area {
+        @apply border-t border-green-500 bg-black p-4 text-green-300;
+    }
+}
+
+@layer utilities {
+    .gradient-text {
+        @apply text-transparent bg-clip-text bg-gradient-to-r from-green-400 via-green-500 to-green-600;
+    }
+
+    .gradient-bg {
+        @apply bg-gradient-to-r from-green-700 via-green-800 to-green-900;
+    }
+}

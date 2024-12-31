@@ -1,0 +1,34 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[[source]]
+url = "https://download.pytorch.org/whl/cu124"
+verify_ssl = true
+name = "downloadpytorch"
+
+[packages]
+numpy = "*"
+scipy = "*"
+matplotlib = "*"
+scikit-learn = "*"
+pandas = "*"
+tensorflow = {extras = ["and-cuda"], version = "*"}
+keras = "*"
+tensorflow-addons = "*"
+torch = "*"
+torchvision = "*"
+torchaudio = "*"
+tensorboardx = "*"
+requests = "*"
+ultralytics = "*"
+ipython = "*"
+wandb = "*"
+google-cloud-storage = "*"
+adversarial-robustness-toolbox="*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.8"

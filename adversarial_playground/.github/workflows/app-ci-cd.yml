@@ -1,0 +1,101 @@
+name: Continuous Integration and Continuous Deployment
+run-name: ${{ github.actor }} submitted a CI CD Action
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  Explore-GitHub-Actions:
+    if: contains(github.event.head_commit.message, '/deploy-app')
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Comment ${{ github.event.head_commit.message }}"
+      - run: echo "Job was automatically triggered by a ${{ github.event_name }} event."
+      - run: echo "Job is now running on a ${{ runner.os }} server hosted by GitHub!"
+      - run: echo "Branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
+      - name: Check out repository code
+        uses: actions/checkout@v4
+      - id: 'auth'
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+      - name: Write Credentials to File
+        run: |
+          echo '${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}' > $HOME/gcp-key.json
+      - name: Configure Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v1 
+      - name: Configure Docker Client
+        run: |-
+          gcloud auth configure-docker # --quiet #authenticate to gcr
+      - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
+      - run: echo "🖥️ The workflow is now ready to test your code on the runner."
+      - name: List files in the repository
+        run: |
+          ls ${{ github.workspace }}
+
+      - name: Build Upload Deployment Container 
+        run: |-
+          cd ${{ github.workspace }}/src/deployment_upload/
+          docker build -t ap-upload-deployment -f Dockerfile .
+      - name: Run Deploy Upload
+        run: |-
+          docker run --rm --name ap-upload-deployment \
+          -v /var/run/docker.sock:/var/run/docker.sock \
+          -v "$HOME/.ssh":/home/app/.ssh \
+          -v ${{ github.workspace }}/src/custom_upload_data:/custom_upload_data \
+          -v ${{ github.workspace }}/src/custom_upload_model:/custom_upload_model \
+          --volume $GITHUB_WORKSPACE:/workspace \
+          --mount type=bind,source=$GOOGLE_APPLICATION_CREDENTIALS,target=/secrets/deployment.json \
+          --env GOOGLE_APPLICATION_CREDENTIALS=/secrets/deployment.json \
+          -e USE_GKE_GCLOUD_AUTH_PLUGIN=True \
+          -e GCP_PROJECT=secret-cipher-399620 \
+          -e GCP_ZONE=us-east1 \
+          -e DOCKERHUB_USERNAME=${{ vars.DOCKERHUB_USERNAME }} \
+          -e DOCKERHUB_PASSWORD=${{ secrets.DOCKER_ACCESS_TOKEN }} \
+          ap-upload-deployment
+      
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ vars.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKER_ACCESS_TOKEN }}
+          registry: docker.io
+
+      - name: Build Frontend Deployment Container 
+        run: |-
+          cd ${{ github.workspace }}/src/deployment_frontend/
+          docker build -t ap-frontend-deployment -f Dockerfile .
+      - name: Run Deploy Frontend
+        run: |-
+          docker run --rm --name ap-frontend-deployment \
+          -v /var/run/docker.sock:/var/run/docker.sock \
+          -v "$HOME/.ssh":/home/app/.ssh \
+          -v ${{ github.workspace }}/src/app-building:/app-building \
+          --volume $GITHUB_WORKSPACE:/workspace \
+          --mount type=bind,source=$GOOGLE_APPLICATION_CREDENTIALS,target=/secrets/deployment.json \
+          --env GOOGLE_APPLICATION_CREDENTIALS=/secrets/deployment.json \
+          -e USE_GKE_GCLOUD_AUTH_PLUGIN=True \
+          -e GCP_PROJECT=secret-cipher-399620 \
+          -e GCP_ZONE=us-east1 \
+          -e DOCKERHUB_USERNAME=${{ vars.DOCKERHUB_USERNAME }} \
+          -e DOCKERHUB_PASSWORD=${{ secrets.DOCKER_ACCESS_TOKEN }} \
+          ap-frontend-deployment
+
+      - name: Build Backend Deployment Container 
+        run: |-
+          cd ${{ github.workspace }}/src/deployment/
+          docker build -t ap-backend-deployment -f Dockerfile .
+      - name: Run Deploy Backend
+        run: |-
+          docker run --rm --name ap-backend-deployment \
+          -v /var/run/docker.sock:/var/run/docker.sock \
+          -v "$HOME/.ssh":/home/app/.ssh \
+          -v ${{ github.workspace }}/src/art_attacks:/art_attacks \
+          -v ${{ github.workspace }}/src/app-building:/app-building \
+          --volume $GITHUB_WORKSPACE:/workspace \
+          --mount type=bind,source=$GOOGLE_APPLICATION_CREDENTIALS,target=/secrets/deployment.json \
+          --env GOOGLE_APPLICATION_CREDENTIALS=/secrets/deployment.json \
+          -e USE_GKE_GCLOUD_AUTH_PLUGIN=True \
+          -e GCP_PROJECT=secret-cipher-399620 \
+          -e GCP_ZONE=us-east1 \
+          ap-backend-deployment
